@@ -101,7 +101,7 @@ final class RMSearchViewViewModel {
             switch result {
             case .success(let model):
                 self?.processSearchResults(model: model)
-            case .failure(let error):
+            case .failure:
                 self?.handleNoResults()
             }
         }
