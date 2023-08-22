@@ -21,6 +21,8 @@ final class RMSearchViewViewModel {
     private var searchResultHandler: ((RMSearchResultsViewModel) -> Void)?
     private var noResultsHandler: (() -> Void)?
     
+    private var searchResultModel: Codable?
+     
     // MARK: Init
     
     init(config: RMSearchViewController.Config) {
@@ -28,6 +30,13 @@ final class RMSearchViewViewModel {
     }
     
     // MARK: Public
+    
+    public func locationSearchResult(at index: Int) -> RMLocation? {
+        guard let searchModel = searchResultModel as? RMGetAllLocationsResponse else {
+            return nil
+        }
+        return searchModel.results[index]
+    }
     
     public func registerSearchResultsHandler(_ block: @escaping (RMSearchResultsViewModel) -> Void) {
         self.searchResultHandler = block
@@ -80,6 +89,8 @@ final class RMSearchViewViewModel {
         }
     }
     
+    // MARK: Private
+    
     private func makeSearchAPICall<T: Codable>(_ type: T.Type, request: RMRequest) {
         // Execute request
         RMService.shared.execute(
@@ -119,6 +130,7 @@ final class RMSearchViewViewModel {
         }
         
         if let results = resultsVM {
+            self.searchResultModel = model
             self.searchResultHandler?(results)
         } else {
             handleNoResults()
