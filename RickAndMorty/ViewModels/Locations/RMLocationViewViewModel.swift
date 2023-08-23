@@ -89,8 +89,8 @@ final class RMLocationViewViewModel {
                 self.locations.append(contentsOf: moreResults)
                 DispatchQueue.main.async {
                     // Notify via callback
-                    self.didFinishPagination?()
                     self.isLoadingMoreLocations = false
+                    self.didFinishPagination?()
                 }
             case .failure(let failure):
                 print(String(describing: failure))

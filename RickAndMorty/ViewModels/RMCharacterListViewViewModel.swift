@@ -152,9 +152,9 @@ extension RMCharacterListViewViewModel: UICollectionViewDataSource, UICollection
         let bounds = collectionView.bounds
         let width: CGFloat
         if isIphone {
-            width = (bounds.width-30) / 2
+            width = (bounds.width - 30) / 2
         } else {
-            width = (bounds.width-50) / 4
+            width = (bounds.width - 50) / 4
         }
         return CGSize(
             width: width,
