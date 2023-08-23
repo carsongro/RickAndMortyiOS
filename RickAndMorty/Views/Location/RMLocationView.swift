@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Interface to relay location view events
 protocol RMLocationViewDelegate: AnyObject {
     func rmLocationView(_ locationView: RMLocationView, didSelect location: RMLocation)
 }
@@ -94,7 +95,7 @@ final class RMLocationView: UIView {
     }
 }
 
-// MARK: Table View Delegate
+// MARK: TableViewDelegate
 
 extension RMLocationView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -106,7 +107,7 @@ extension RMLocationView: UITableViewDelegate {
     }
 }
 
-// MARK: Table View Data Source
+// MARK: TableViewDataSource
 
 extension RMLocationView: UITableViewDataSource {
     
@@ -131,6 +132,8 @@ extension RMLocationView: UITableViewDataSource {
     }
 }
 
+// MARK: ScrollViewDelegate
+
 extension RMLocationView: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard let viewModel = viewModel,
@@ -145,9 +148,7 @@ extension RMLocationView: UIScrollViewDelegate {
             let totalScrollViewFixedHeight = scrollView.frame.size.height
             
             if offset >= (totalContentHeight - totalScrollViewFixedHeight - 120) {
-                DispatchQueue.main.async {
-                    self?.showLoadingIndicator()
-                }
+                self?.showLoadingIndicator()
                 viewModel.fetchAdditionalLocations()
             }
             t.invalidate()
@@ -155,14 +156,9 @@ extension RMLocationView: UIScrollViewDelegate {
     }
     
     private func showLoadingIndicator() {
-        let footer = RMTableLoadingFooterView(
-            frame: CGRect(
-                x: 0,
-                y: 0,
-                width: frame.width,
-                height: 100
-            )
-        )
-        tableView.tableFooterView = footer
+        tableView.tableFooterView = RMTableLoadingFooterView(frame: CGRect(x: 0,
+                                                                           y: 0,
+                                                                           width: frame.width,
+                                                                           height: 100))
     }
 }

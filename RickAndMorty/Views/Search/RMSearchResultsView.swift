@@ -9,6 +9,8 @@ import UIKit
 
 protocol RMSearchResultsViewDelegate: AnyObject {
     func rmSearchResultsView(_ resultsView: RMSearchResultsView, didTapLocationAt index: Int)
+    func rmSearchResultsView(_ resultsView: RMSearchResultsView, didTapCharacter index: Int)
+    func rmSearchResultsView(_ resultsView: RMSearchResultsView, didTapEpisode index: Int)
 }
 
 /// Shows search results UITable or Collection as needed
@@ -34,7 +36,7 @@ final class RMSearchResultsView: UIView {
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 10, right: 10)
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.isHidden = true
@@ -184,16 +186,28 @@ extension RMSearchResultsView: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
+        guard let viewModel = viewModel else {
+            return
+        }
         
+        switch viewModel.results {
+        case .characters:
+            delegate?.rmSearchResultsView(self, didTapCharacter: indexPath.row)
+        case .episodes:
+            delegate?.rmSearchResultsView(self, didTapEpisode: indexPath.row)
+        case .locations:
+            break
+        }
     }
-    
+     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let currentViewModel = collectionViewCellViewModels[indexPath.row]
         let bounds = collectionView.bounds
         
         if currentViewModel is RMCharacterCollectionViewCellViewModel {
             // Character size
-            let width = (bounds.width-30) / 2
+            let width = UIDevice.isiPhone ? (bounds.width - 30) / 2 : (bounds.width - 50) / 4
+            
             return CGSize(
                 width: width,
                 height: width * 1.5
@@ -201,7 +215,7 @@ extension RMSearchResultsView: UICollectionViewDelegate, UICollectionViewDataSou
         }
         
         // Episode
-        let width = bounds.width - 20
+        let width = UIDevice.isiPhone ? bounds.width - 20 : (bounds.width - 50) / 4
         return CGSize(
             width: width,
             height: 100

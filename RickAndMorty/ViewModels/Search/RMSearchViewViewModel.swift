@@ -38,6 +38,20 @@ final class RMSearchViewViewModel {
         return searchModel.results[index]
     }
     
+    public func characterSearchResult(at index: Int) -> RMCharacter? {
+        guard let searchModel = searchResultModel as? RMGetAllCharactersResponse else {
+            return nil
+        }
+        return searchModel.results[index]
+    }
+    
+    public func episodeSearchResult(at index: Int) -> RMEpisode? {
+        guard let searchModel = searchResultModel as? RMGetAllEpisodesResponse else {
+            return nil
+        }
+        return searchModel.results[index]
+    }
+    
     public func registerSearchResultsHandler(_ block: @escaping (RMSearchResultsViewModel) -> Void) {
         self.searchResultHandler = block
     }
